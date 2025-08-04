@@ -12,7 +12,7 @@ To develop a generative model that can **intelligently complete user playlists**
 
 ---
 
-### 💡 Why does it matter? (Business value & impact)
+### 💡 Why it matters? (Business value & impact)
 
 Increasing user engagement time has several strategic benefits:
 
