@@ -1,6 +1,7 @@
 # PlayGenie
 PlayGenie is a Generative model for intelligent playlist completion. For more checkout the detailed info [here](https://github.com/Brackly/PlayGenie/blob/main/About.md)
 
+![model](https://github.com/Brackly/PlayGenie/blob/main/img.png?raw=true)
 ## Prerequisites
 
 1.Install uv:
