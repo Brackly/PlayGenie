@@ -17,8 +17,12 @@ PlayGenie is a Generative model for intelligent playlist completion. For more ch
    ```
    uv add <package>
    ```
+3To remove a library, run:
+   ```
+   uv remove <package>
+   ```
    **NOTE:** To add a dev dependency, use `uv add --dev <package>`
 3. To run :
    ```
-   $ databricks bundle run
+   $ 
    ```
