@@ -101,7 +101,7 @@ The ELBO to maximize is:
 ```math
 \mathcal{L}_{\text{VAE}} = 
 - \mathbb{E}_{q(\mathbf{u} \mid \text{playlist}_{\leq n})} \left[
-  \sum_{i=1}^{k} \log P(s_{n+i} \mid s_{\leq n+i-1}, \mathbf{u})
+  \sum_{i=1}^{k}q(u\mid s_{\leq n+i-1}) \log P(s_{n+i} \mid  \mathbf{u})
 \right]
 + \beta \, D_{\text{KL}} \left[
   q(\mathbf{u} \mid \text{playlist}_{\leq n}) \,\|\, p(\mathbf{u})
