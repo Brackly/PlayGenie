@@ -12,14 +12,15 @@ class Encoder(torch.nn.Module):
             self.mid_layers.append(torch.nn.Linear(hidden_size, hidden_size))
             self.mid_layers.append(torch.nn.ReLU())
 
-        self.output_layer = torch.nn.Linear(hidden_size, latent_size)
+        self.output_mean = torch.nn.Linear(hidden_size, latent_size)
+        self.output_logvar = torch.nn.Linear(hidden_size, latent_size)
         self.relu = torch.nn.ReLU()
 
     def forward(self, inputs:torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
         out = self.relu(self.input_layer(inputs))
         out = self.mid_layers(out)
-        mean:torch.Tensor = self.output_layer(out)
-        log_var: torch.Tensor = self.output_layer(out)
+        mean:torch.Tensor = self.output_mean(out)
+        log_var: torch.Tensor = self.output_logvar(out)
         return mean,log_var
 
 class Decoder(torch.nn.Module):
@@ -41,8 +42,9 @@ class Decoder(torch.nn.Module):
 
 
 def reparameterize(mu:torch.Tensor, log_var:torch.Tensor) -> torch.Tensor:
-    epsilon = torch.randn_like(log_var)
-    return mu + log_var * epsilon
+    var = torch.exp(0.5 * log_var)
+    epsilon = torch.randn_like(var)
+    return mu + var * epsilon
 
 
 class VAE(torch.nn.Module):
