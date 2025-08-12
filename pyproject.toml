@@ -8,6 +8,8 @@ dependencies = [
     "torch",
     "pandas",
     "numpy",
+    "networkx>=3.5",
+    "pylint>=3.3.8",
 ]
 
 
