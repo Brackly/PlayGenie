@@ -18,6 +18,10 @@ class DataSet(torch.utils.data.Dataset):
         return self.data[idx,0:10,:],self.data[idx,1:11,:]
 
 
+def get_dataloader(path:str,mode:Literal['train','validation','test'],batch_size:int)->torch.utils.data.DataLoader:
+    return torch.utils.data.DataLoader(dataset=DataSet(path=path, mode=mode),shuffle=False,batch_size=batch_size)
+
+
 
 
 
