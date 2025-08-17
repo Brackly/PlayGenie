@@ -14,12 +14,12 @@ class CausalAttention(torch.nn.Module):
         self.feed_forward = torch.nn.Linear(d_ff, d_ff, bias=True)
         self.relu = torch.nn.ReLU()
     def forward(self,x:torch.Tensor):
-        B,T,C = x.shape
+        b,t,c = x.shape
         q = self.q(x)
         k = self.k(x)
         v = self.v(x)
         out = q @ k.transpose(-2,-1)
-        out = out.masked_fill(self.tril[:T,:T]==0,float('-inf'))
+        out = out.masked_fill(self.tril[:t,:t]==0,float('-inf'))
         #
         out = torch.nn.functional.softmax(out, dim=-1)
         out = out @ v
@@ -91,7 +91,7 @@ class VAE(torch.nn.Module):
                  batch_size:int=10,
                  playlist:Union[List[torch.Tensor],None]=None
                  ) -> List[torch.Tensor]:
-        assert batch_size <= config.HIDDEN_DIM , f"The batch size must not be greater than {config.HIDDEN_DIM}"
+        assert batch_size <= config.CONTEXT_SIZE , f"The batch size must not be greater than {config.CONTEXT_SIZE}"
 
         playlist = [] if playlist is None else playlist
 
