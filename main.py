@@ -1,10 +1,15 @@
+import logging
+
 from playgenie.scripts.train import objective
 from playgenie.utils.optuna import create_load_study
 import config
+from playgenie.utils.logging import get_logger
 
-def main(study_name:str=None):
+logger = get_logger(__name__)
 
-    study = create_load_study(study_name=study_name)
+def main():
+    logger.info("Starting experiment..")
+    study = create_load_study(study_name=config.OPTUNA_STUDY_NAME)
     study.optimize(objective, n_trials=config.OPTUNA_TRIALS)
 
     best_optuna_trial = study.best_trial

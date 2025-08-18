@@ -38,4 +38,4 @@ class WandbUtils:
 
     @staticmethod
     def log_metrics(metrics:dict):
-        wandb.log(**metrics)
+        wandb.log(data=metrics)

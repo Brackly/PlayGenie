@@ -15,7 +15,7 @@ def create_model(hyper_params:dict)-> torch.nn.Module:
     return model
 
 def create_optimizer(model, hyper_params:dict)-> torch.optim.Adam:
-    optimizer = torch.optim.Adam(model.parameters(), lr=hyper_params.get("LR"))
+    optimizer = torch.optim.Adam(model.parameters(), lr=hyper_params.get("LEARNING_RATE"))
     return optimizer
 
 def train_loop(
@@ -98,5 +98,6 @@ def objective(trial:optuna.Trial)-> float:
     hyper_params = {
         "HIDDEN_DIM": trial.suggest_int("HIDDEN_DIM", 1, 100),
         "LATENT_DIM": trial.suggest_int("LATENT_DIM", 1, 100),
+        "LEARNING_RATE": trial.suggest_float("LEARNING_RATE", 1e-4, 1e-3),
         }
     return train_loop(hyper_params=hyper_params)
