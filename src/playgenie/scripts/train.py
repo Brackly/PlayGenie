@@ -1,4 +1,4 @@
-
+import os
 import torch
 from playgenie.model import VAE
 from playgenie.loss import generative_loss
@@ -88,6 +88,9 @@ def train_loop(
                 aliases= [f'epoch_{epoch}'],
                 tags= [f'epoch_{epoch}']
             )
+
+            if os.path.exists(config.MODEL_SAVE_PATH):
+                os.remove(config.MODEL_SAVE_PATH)
         if (epoch+1) % 100 == 0:
             tqdm.write(f"Epoch {epoch+1}: Train Loss={avg_loss:.4f}, Val Loss={avg_val_loss:.4f}")
 
@@ -96,8 +99,8 @@ def train_loop(
 def objective(trial:optuna.Trial)-> float:
 
     hyper_params = {
-        "HIDDEN_DIM": trial.suggest_int("HIDDEN_DIM", 1, 100),
-        "LATENT_DIM": trial.suggest_int("LATENT_DIM", 1, 100),
+        "HIDDEN_DIM": trial.suggest_int("HIDDEN_DIM", 10, 90),
+        "LATENT_DIM": trial.suggest_int("LATENT_DIM", 2, 50),
         "LEARNING_RATE": trial.suggest_float("LEARNING_RATE", 1e-4, 1e-3),
         }
     return train_loop(hyper_params=hyper_params)
