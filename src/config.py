@@ -23,4 +23,5 @@ MODEL_SAVE_PATH = './data/model.pt'
 MODEL_NAME = 'PlayGenie'
 
 OPTUNA_STUDY_NAME = pd.Timestamp.today().isoformat()
+OPTUNA_STORAGE = "sqlite:///optuna.db"
 WANDB_RUN_NAME = pd.Timestamp.now().isoformat()

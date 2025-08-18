@@ -9,6 +9,7 @@ import optuna
 from playgenie.utils.wandb import WandbUtils
 
 DEVICE = config.DEVICE
+wandb_utils = WandbUtils()
 
 def create_model(hyper_params:dict)-> torch.nn.Module:
     model = VAE(input_size=config.INPUT_DIM, hidden_size=hyper_params.get("HIDDEN_DIM"), latent_size=hyper_params.get("LATENT_DIM"))
@@ -21,7 +22,6 @@ def create_optimizer(model, hyper_params:dict)-> torch.optim.Adam:
 def train_loop(
         hyper_params:dict)-> float:
 
-    wandb_utils = WandbUtils()
     wandb_utils.initialize(
         run_name= config.WANDB_RUN_NAME,
         run_config = {
