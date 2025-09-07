@@ -32,12 +32,19 @@ def main():
             best_params = study.best_trial.params
             train_model(hyper_params=best_params, hyperparameter_tuning=False)
         else:
-            raise Exception("Study name must be provided to load the best parameters from optuna")
+            best_params = {
+                "hidden_size": 10,
+                "latent_size": 2,
+                "learning_rate":  1e-3,
+                'encoder_n_heads': 2,
+                'decoder_n_la': 2,
+            }
+            train_model(hyper_params=best_params, hyperparameter_tuning=False)
 
 
 
 if __name__ == "__main__":
-    parser.add_argument('--mode', help='whether model training or hyperparameter tuning',choices=['hyperparam_optimization', 'model_training'],default='model_training',required=True)
+    parser.add_argument('--mode', help='whether model training or hyperparameter tuning',choices=['hyperparam_optimization', 'model_training'],required=True)
     parser.add_argument('--study_name', help='Optuna study name', default=None)
     try:
         main()

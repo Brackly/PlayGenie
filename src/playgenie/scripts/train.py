@@ -30,13 +30,13 @@ def train_model(hyper_params:dict,
     if not hyperparameter_tuning:
         wandb_utils = WandbUtils()
         wandb_utils.initialize(
-            run_name= config.wandb_config.wandb_run_name,
+            run_name= config.wandb_config.WANDB_RUN_NAME,
             run_config = {
                 **hyper_params,
                 'input_size':config.model_config.INPUT_SIZE,
                 'context_size': config.model_config.CONTEXT_SIZE,
                 'epochs': config.training_config.EPOCHS,
-                'optuna_trials': config.optuna_config.OPTUNA_TRIALS,
+                'optuna_trials': config.training_config.OPTUNA_TRIALS,
             }
         )
 
@@ -47,7 +47,7 @@ def train_model(hyper_params:dict,
     optim = create_optimizer(model=model, hyper_params=hyper_params)
 
     best_loss = float('inf')
-    epochs = config.training_config.EPOCHS if hyperparameter_tuning else config.optuna_config.OPTUNA_EPOCHS
+    epochs = config.training_config.EPOCHS if hyperparameter_tuning else config.training_config.OPTUNA_EPOCHS
 
     epoch_bar = tqdm(range(epochs),desc=f'Training model',leave=False)
     for epoch in epoch_bar:
