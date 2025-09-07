@@ -1,27 +1,35 @@
-import torch
-from safetensors import safe_open
-from typing import Literal, Union, Tuple
+from typing import Literal
 
+import numpy
+import torch
+import pyarrow.dataset as ds
 from logging import getLogger
 logger = getLogger(__name__)
+import pandas as pd
+import numpy as np
 
 class DataSet(torch.utils.data.Dataset):
-    def __init__(self, path,mode:Literal['train','validation','test']='train')->None:
-        self.data:Union[torch.Tensor,None] = None
-        with safe_open(path, framework="pt") as f:
-            self.data = f.get_tensor(mode)
+    def __init__(self, folder_path, columns=None):
+        self.dataset:ds.dataset = ds.dataset(folder_path, format="parquet")
+
 
     def __len__(self)->int:
-        return self.data.shape[0]
+        return len(self.dataset.files)
 
-    def __getitem__(self,idx:int)->Tuple[torch.Tensor,torch.Tensor]:
-        return self.data[idx,0:10,:],self.data[idx,1:11,:]
+    def __getitem__(self, idx):
 
-
-def get_dataloader(path:str,mode:Literal['train','validation','test'],batch_size:int)->torch.utils.data.DataLoader:
-    return torch.utils.data.DataLoader(dataset=DataSet(path=path, mode=mode),shuffle=False,batch_size=batch_size)
-
+        df = pd.read_parquet(self.dataset.files[idx])
+        tensors = torch.tensor(numpy.array([x.tolist() for x in pd.read_parquet(self.dataset.files[idx])['embeddings'].values])) #.squeeze(dim=0)
+        return tensors[:,:10,:],tensors[:,1:11,:]
 
 
+def get_dataloader(mode:Literal['train', 'val', 'test']='train'):
+
+    dataset_path :str = f'./data/{mode}'
+    return torch.utils.data.DataLoader(
+        dataset=DataSet(folder_path=dataset_path),
+        batch_size=1, # this has to be low because of the way we are reading and loading the files
+        shuffle=mode=='train',
+    )
 
 

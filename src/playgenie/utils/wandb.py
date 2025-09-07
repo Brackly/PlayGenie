@@ -6,8 +6,8 @@ import wandb
 class WandbUtils:
     def __init__(self):
         wandb.login(
-            key=config.WANDB_API_KEY,
-            host=config.WANDB_HOST,
+            key=config.wandb_config.WANDB_API_KEY,
+            host=config.wandb_config.WANDB_HOST,
             relogin=True
 
         )
@@ -16,8 +16,8 @@ class WandbUtils:
     def initialize(run_config:dict,
                    run_name:str):
         wandb_run:wandb.run = wandb.init(
-            project = config.WANDB_PROJECT,
-            entity = config.WANDB_ENTITY,
+            project = config.wandb_config.WANDB_PROJECT,
+            entity = config.wandb_config.WANDB_ENTITY,
             name = run_name,
             config=run_config)
         return wandb_run

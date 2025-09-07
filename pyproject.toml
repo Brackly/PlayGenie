@@ -11,12 +11,14 @@ dependencies = [
     "networkx>=3.5",
     "ruff>=0.12.8",
     "pyright>=1.1.403",
-    "safetensors>=0.6.2",
     "tqdm>=4.67.1",
     "sentence-transformers>=5.1.0",
     "optuna>=4.4.0",
     "wandb>=0.21.1",
     "python-dotenv>=1.1.1",
+    "pyspark>=4.0.0",
+    "iprogress>=0.4",
+    "pyarrow>=21.0.0",
 ]
 
 
