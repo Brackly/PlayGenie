@@ -28,6 +28,7 @@ class TrainingConfig:
     TRAIN_RATIO:float = 0.6
     VAL_RATIO:float = 0.2
     OPTUNA_TRIALS: int = 50
+    HYPER_PARAM_DATA_RATIO: float = 0.5
 
 @dataclass
 class PathConfig:

@@ -40,8 +40,9 @@ def train_model(hyper_params:dict,
             }
         )
 
-    train_dataloader = get_dataloader(mode='train')
-    validation_dataloader = get_dataloader(mode='val')
+    data_ratio = config.training_config.HYPER_PARAM_DATA_RATIO if hyperparameter_tuning else 1
+    train_dataloader = get_dataloader(mode='train',data_ratio=data_ratio)
+    validation_dataloader = get_dataloader(mode='val',data_ratio=data_ratio)
 
     model = create_model(hyper_params=hyper_params)
     optim = create_optimizer(model=model, hyper_params=hyper_params)
