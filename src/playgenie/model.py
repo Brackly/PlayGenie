@@ -103,10 +103,9 @@ class Encoder(torch.nn.Module):
         """
         # single attention block
         out = self.attention_block(inputs)        # (b, t, input_size)
-        out = out.mean(dim=1)                     # aggregate over sequence -> (b, input_size)
-        out = self.relu(self.to_hidden(out))      # -> (b, hidden_size)
-        mean = self.output_mean(out)              # (b, latent_size)
-        log_var = self.output_logvar(out)         # (b, latent_size)
+        out = self.relu(self.to_hidden(out))      # -> (b,t, hidden_size)
+        mean = self.output_mean(out)              # (b,t, latent_size)
+        log_var = self.output_logvar(out)         # (b,t, latent_size)
         return mean, log_var
 
 class Decoder(torch.nn.Module):
@@ -118,12 +117,12 @@ class Decoder(torch.nn.Module):
             self.mid_layers.append(torch.nn.Linear(hidden_size, hidden_size))
             self.mid_layers.append(torch.nn.ReLU())
 
-        self.output_layer = torch.nn.Linear(hidden_size, output_size*config.model_config.CONTEXT_SIZE)
+        self.output_layer = torch.nn.Linear(hidden_size, output_size)
         self.relu = torch.nn.ReLU()
     def forward(self, latent:torch.Tensor) -> torch.Tensor:
         out = self.relu(self.input_layer(latent))
         out = self.mid_layers(out)
-        out = self.relu(self.output_layer(out)).view(-1,config.model_config.CONTEXT_SIZE,config.model_config.INPUT_SIZE)
+        out = self.relu(self.output_layer(out))
         return out
 
 
@@ -155,19 +154,13 @@ class VAE(torch.nn.Module):
 
     @torch.no_grad()
     def generate(self,
-                 batch_size:int=10,
                  playlist:Union[List[torch.Tensor],None]=None
                  ) -> List[torch.Tensor]:
-        assert batch_size <= config.model_config.CONTEXT_SIZE , f"The batch size must not be greater than {config.model_config.CONTEXT_SIZE}"
 
-        playlist = [] if playlist is None else playlist
-
-        for song_idx in range(batch_size):
-            if len(playlist) == 0:
-                noise = torch.randn(1, 2)
-                first_song = self.decoder(noise).detach()
-                playlist.append(first_song[0])
-            else:
-                next_song, _, _ = self(torch.cat(playlist, dim=0).view(1, -1, config.INPUT_DIM))
-                playlist.append(next_song[0, 0])
-        return [song.detach().cpu().numpy() for song in playlist]
+        if playlist is None:
+            noise = torch.randn(1, 2)
+            first_song = self.decoder(noise).detach()
+            return first_song[0]
+        else:
+            next_song, _, _ = self(torch.cat([song.view(1,-1) for song in playlist],dim=1).view(1, -1, config.model_config.INPUT_SIZE))
+            return next_song[0, 0]

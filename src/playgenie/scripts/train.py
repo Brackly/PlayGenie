@@ -7,6 +7,9 @@ from tqdm import tqdm
 from playgenie.data.dataset import get_dataloader
 import optuna
 from playgenie.utils.wandb import WandbUtils
+import logging
+
+logger = logging.getLogger(__name__)
 
 DEVICE = config.DEVICE
 
@@ -39,8 +42,8 @@ def train_model(hyper_params:dict,
                 'optuna_trials': config.training_config.OPTUNA_TRIALS,
             }
         )
-
     data_ratio = config.training_config.HYPER_PARAM_DATA_RATIO if hyperparameter_tuning else 1
+    print(f'{hyperparameter_tuning=} with {data_ratio=}')
     train_dataloader = get_dataloader(mode='train',data_ratio=data_ratio)
     validation_dataloader = get_dataloader(mode='val',data_ratio=data_ratio)
 
@@ -48,7 +51,7 @@ def train_model(hyper_params:dict,
     optim = create_optimizer(model=model, hyper_params=hyper_params)
 
     best_loss = float('inf')
-    epochs = config.training_config.EPOCHS if hyperparameter_tuning else config.training_config.OPTUNA_EPOCHS
+    epochs = config.training_config.EPOCHS if not hyperparameter_tuning else config.training_config.OPTUNA_EPOCHS
 
     epoch_bar = tqdm(range(epochs),desc=f'Training model',leave=False)
     for epoch in epoch_bar:

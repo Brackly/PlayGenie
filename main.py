@@ -1,3 +1,4 @@
+from typing import Literal, Optional
 import argparse
 
 from playgenie.scripts.train import objective,train_model
@@ -31,14 +32,7 @@ def main():
             best_params = study.best_trial.params
             train_model(hyper_params=best_params, hyperparameter_tuning=False)
         else:
-            best_params = {
-                "hidden_size": 10,
-                "latent_size": 2,
-                "learning_rate":  1e-3,
-                'encoder_n_heads': 2,
-                'decoder_n_la': 2,
-            }
-            train_model(hyper_params=best_params, hyperparameter_tuning=False)
+            raise Exception("Study name must be provided to load the best parameters from optuna")
 
 
 
