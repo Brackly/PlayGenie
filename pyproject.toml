@@ -19,6 +19,7 @@ dependencies = [
     "pyspark>=4.0.0",
     "iprogress>=0.4",
     "pyarrow>=21.0.0",
+    "qdrant-client>=1.15.1",
 ]
 
 

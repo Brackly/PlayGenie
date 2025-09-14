@@ -1,8 +1,12 @@
 from typing import Tuple,List,Union
 
 import math
+
+import numpy as np
 import torch
 import config
+from playgenie.utils.qdrant_search import QdrantSearch
+
 
 class MultiHeadAttention(torch.nn.Module):
     def __init__(self, d_model: int, num_heads: int, bias: bool = True):
@@ -155,7 +159,9 @@ class VAE(torch.nn.Module):
     @torch.no_grad()
     def generate(self,
                  playlist:Union[List[torch.Tensor],None]=None
-                 ) -> List[torch.Tensor]:
+                 ) -> np.array():
+
+        search_client = QdrantSearch()
 
         if playlist is None:
             noise = torch.randn(1, 2)
@@ -163,4 +169,4 @@ class VAE(torch.nn.Module):
             return first_song[0]
         else:
             next_song, _, _ = self(torch.cat([song.view(1,-1) for song in playlist],dim=1).view(1, -1, config.model_config.INPUT_SIZE))
-            return next_song[0, 0]
+            return search_client.get_item(song_vector=next_song[0, 0].detach().cpu().numpy())
