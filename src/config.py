@@ -3,6 +3,7 @@ import pandas as pd
 import torch
 from dotenv import load_dotenv
 from dataclasses import dataclass
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -44,7 +45,13 @@ class OptunaConfig:
     OPTUNA_STUDY_NAME = pd.Timestamp.today().isoformat()
     OPTUNA_STORAGE = "sqlite:///optuna.db"
 
-
+@dataclass
+class InferenceConfig:
+    input_size: int = 384
+    hidden_size: int =10
+    latent_size: int = 2
+    encoder_n_heads: int = 2
+    decoder_n_la: int =2
 # =============================================================
 # Singleton instances
 # =============================================================
@@ -53,4 +60,5 @@ paths = PathConfig()
 wandb_config = WandbConfig()
 model_config = ModelConfig()
 training_config = TrainingConfig()
+inference_config = InferenceConfig()
 optuna_config = OptunaConfig()

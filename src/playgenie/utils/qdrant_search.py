@@ -1,7 +1,4 @@
-from typing import List
-
 import numpy as np
-import torch
 
 from playgenie.data.dataset import DataSet
 import pandas as pd
@@ -11,7 +8,7 @@ from sentence_transformers import SentenceTransformer
 
 class QdrantSearch:
     def __init__(self):
-        self.files = DataSet(folder_path='../data/song_embeddings.parquet').dataset.files
+        self.files = DataSet(folder_path='./data/song_embeddings.parquet').dataset.files
         self.encoder = SentenceTransformer("all-MiniLM-L6-v2")
         self.client = QdrantClient(":memory:")
         self.idx = 0

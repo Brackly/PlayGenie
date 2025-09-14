@@ -5,7 +5,6 @@ import math
 import numpy as np
 import torch
 import config
-from playgenie.utils.qdrant_search import QdrantSearch
 
 
 class MultiHeadAttention(torch.nn.Module):
@@ -159,14 +158,14 @@ class VAE(torch.nn.Module):
     @torch.no_grad()
     def generate(self,
                  playlist:Union[List[torch.Tensor],None]=None
-                 ) -> np.array():
+                 ) -> np.ndarray:
 
-        search_client = QdrantSearch()
+        playlist = [] if playlist is None else playlist
 
-        if playlist is None:
+        if len(playlist)==0:
             noise = torch.randn(1, 2)
             first_song = self.decoder(noise).detach()
-            return first_song[0]
+            return first_song[0].cpu().numpy()
         else:
             next_song, _, _ = self(torch.cat([song.view(1,-1) for song in playlist],dim=1).view(1, -1, config.model_config.INPUT_SIZE))
-            return search_client.get_item(song_vector=next_song[0, 0].detach().cpu().numpy())
+            return next_song[0, 0].detach().cpu().numpy()
